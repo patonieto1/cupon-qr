@@ -170,3 +170,76 @@ input:focus, select:focus{
   color: var(--muted);
   font-size: 12px;
 }
+.banner img{
+  width:100%;
+  display:block;
+  border-radius:14px 14px 0 0;
+}
+
+.row{
+  display:flex;
+  gap:12px;
+}
+.row select{
+  flex: 0 0 42%;
+}
+.row input{
+  flex: 1;
+}
+
+.help{
+  font-size: 12px;
+  opacity: .85;
+  margin: 6px 0 12px;
+}
+
+.msg{
+  margin-top: 12px;
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  display:block;
+}
+.msg.ok{ background: rgba(0,255,0,.10); }
+.msg.err{ background: rgba(255,0,0,.10); }
+
+.couponBox{
+  margin-top: 18px;
+  border: 1px dashed rgba(255,255,255,.35);
+  border-radius: 14px;
+  padding: 18px;
+  text-align: center;
+}
+.couponTitle{
+  font-weight: 700;
+  letter-spacing: .08em;
+  opacity: .9;
+}
+.couponCode{
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: .10em;
+  margin: 10px 0 12px;
+}
+.couponMeta{
+  font-size: 13px;
+  opacity: .9;
+  line-height: 1.5;
+}
+.couponHint{
+  margin-top: 12px;
+  font-size: 12px;
+  opacity: .8;
+}
+.actions{
+  margin-top: 14px;
+  text-align:center;
+}
+.linkbtn{
+  display:inline-block;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.25);
+  text-decoration:none;
+  color: inherit;
+}
