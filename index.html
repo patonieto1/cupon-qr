@@ -3,213 +3,243 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>CÉLINE — Cupón Especial</title>
+  <title>CÉLINE — Cupón de beneficio</title>
 
   <style>
     :root{
       --bg:#0b0b0c;
-      --card:rgba(255,255,255,.08);
-      --card2:rgba(255,255,255,.06);
-      --text:#f2f2f2;
-      --muted:rgba(255,255,255,.72);
-      --line:rgba(255,255,255,.14);
-      --btn:#ffffff;
-      --btnText:#0b0b0c;
-      --shadow: 0 20px 60px rgba(0,0,0,.55);
-      --gold: rgba(208, 177, 120, .95);
+      --card:#121214cc;
+      --stroke:#ffffff20;
+      --text:#f5f5f5;
+      --muted:#b9b9b9;
+      --field:#0f0f12;
+      --btn:#f2f2f2;
+      --btnText:#111;
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius: 18px;
     }
-    *{box-sizing:border-box}
+    *{ box-sizing:border-box; }
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
       background:
-        radial-gradient(900px 600px at 20% 10%, rgba(255,255,255,.10), transparent 60%),
-        radial-gradient(900px 600px at 90% 30%, rgba(255,255,255,.08), transparent 60%),
-        linear-gradient(180deg, #0b0b0c 0%, #0b0b0c 60%, #090909 100%);
+        radial-gradient(1200px 700px at 20% 10%, #2b2b2b22, transparent 60%),
+        radial-gradient(900px 600px at 80% 40%, #ffffff10, transparent 65%),
+        linear-gradient(180deg, #0a0a0b, #050506);
       min-height:100vh;
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:28px 14px;
+      padding:26px 14px;
     }
-    .wrap{width:100%; max-width:560px;}
+    .wrap{ width:min(520px, 100%); }
+
     .card{
-      background: linear-gradient(180deg, var(--card) 0%, var(--card2) 100%);
-      border:1px solid var(--line);
-      border-radius:20px;
-      box-shadow: var(--shadow);
+      background:var(--card);
+      border:1px solid var(--stroke);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
       overflow:hidden;
-      backdrop-filter: blur(14px);
+      backdrop-filter: blur(10px);
     }
 
     .banner{
       width:100%;
       height:150px;
-      background:
-        linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.65)),
-        url("BANER.jpeg");
-      background-size: cover;
-      background-position: center;
-      display:flex;
-      align-items:flex-end;
-      padding:18px 18px 16px;
-      border-bottom:1px solid var(--line);
+      background:#000;
+      position:relative;
+      border-bottom:1px solid var(--stroke);
     }
-    .brand .title{
-      font-weight:800;
-      letter-spacing:.22em;
-      text-transform:uppercase;
-      font-size:18px;
+    .banner img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      filter: contrast(1.05) saturate(1.05);
     }
-    .brand .sub{
-      margin-top:6px;
+    .brand{
+      position:absolute;
+      left:18px;
+      bottom:14px;
+      text-shadow: 0 10px 20px rgba(0,0,0,.6);
+    }
+    .brand .small{
       font-size:12px;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      opacity:.9;
+    }
+    .brand .line{
+      font-size:12px;
+      opacity:.85;
+      margin-top:4px;
+    }
+
+    .content{ padding:18px 18px 16px; }
+
+    h1{
+      margin:0 0 6px 0;
+      font-size:26px;
+      letter-spacing:.01em;
+    }
+    .sub{
+      margin:0 0 14px 0;
       color:var(--muted);
+      font-size:14px;
+      line-height:1.35;
+    }
+
+    form{ display:grid; gap:12px; }
+    label{
+      font-size:12px;
       letter-spacing:.12em;
       text-transform:uppercase;
+      color:#d9d9d9;
     }
 
-    .content{padding:18px;}
-    h1{margin:6px 0 8px; font-size:28px;}
-    p{margin:0 0 14px; color:var(--muted); font-size:14px; line-height:1.45}
-
-    .grid{display:grid; gap:12px; margin-top:8px;}
-    .row2{display:grid; grid-template-columns: 1fr 1fr; gap:12px;}
-
-    label{display:block; font-size:12px; color:var(--muted); margin:0 0 6px; letter-spacing:.06em}
     input, select{
       width:100%;
       padding:12px 12px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.06);
+      border-radius:14px;
+      border:1px solid var(--stroke);
+      background:linear-gradient(180deg, #0e0e11, #0a0a0c);
       color:var(--text);
       outline:none;
-      font-size:14px;
     }
-    input::placeholder{color:rgba(255,255,255,.45)}
-    input:focus, select:focus{border-color:rgba(255,255,255,.30)}
-    select option{color:#111}
+    input::placeholder{ color:#8b8b8b; }
+
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 140px;
+      gap:10px;
+      align-items:end;
+    }
+    @media (max-width:420px){
+      .row{ grid-template-columns: 1fr 120px; }
+    }
+    .row2{
+      display:grid;
+      grid-template-columns: 160px 1fr;
+      gap:10px;
+      align-items:end;
+    }
+    @media (max-width:420px){
+      .row2{ grid-template-columns: 140px 1fr; }
+    }
+
+    .hint{
+      margin-top:-6px;
+      font-size:12px;
+      color:#a8a8a8;
+      line-height:1.35;
+    }
 
     .btn{
-      margin-top:12px;
+      margin-top:6px;
       width:100%;
-      padding:13px 14px;
-      border:0;
-      border-radius:14px;
+      border:none;
+      border-radius:16px;
+      padding:14px 16px;
+      font-weight:800;
+      letter-spacing:.16em;
+      text-transform:uppercase;
       background:var(--btn);
       color:var(--btnText);
-      font-weight:900;
-      letter-spacing:.06em;
       cursor:pointer;
-      transition: transform .06s ease, opacity .2s ease;
     }
-    .btn:disabled{opacity:.6; cursor:not-allowed}
-    .btn:active{transform: scale(.99)}
-    .btn.ghost{
-      background: transparent;
-      color: var(--text);
-      border:1px solid var(--line);
-      margin-top:10px;
-    }
+    .btn:disabled{ opacity:.6; cursor:not-allowed; }
 
-    .fine{
+    .legal{
       margin-top:12px;
-      font-size:12px;
-      color:rgba(255,255,255,.55);
-      line-height:1.35
-    }
-    .status{
-      margin-top:10px;
-      font-size:13px;
-      color:rgba(255,255,255,.86);
-      display:none;
-    }
-
-    /* CUPÓN VISUAL */
-    .couponWrap{
-      display:none;
-      padding:18px;
-      border-top:1px solid var(--line);
-      background: rgba(0,0,0,.25);
-    }
-    .coupon{
-      border-radius:18px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.18);
-      box-shadow: 0 18px 60px rgba(0,0,0,.55);
-      background:
-        linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.75)),
-        url("BANER.jpeg");
-      background-size: cover;
-      background-position: center;
-      padding:18px;
-      position:relative;
-    }
-    .coupon::after{
-      content:"";
-      position:absolute; inset:0;
-      background: radial-gradient(800px 280px at 20% 0%, rgba(208,177,120,.18), transparent 55%);
-      pointer-events:none;
-    }
-    .couponTop{
-      position:relative;
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:10px;
-    }
-    .couponBrand{
-      font-weight:900;
-      letter-spacing:.22em;
-      text-transform:uppercase;
-      font-size:16px;
-    }
-    .couponTag{
-      margin-top:6px;
-      font-size:12px;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.75);
-    }
-    .badge{
-      position:relative;
-      border:1px solid rgba(208,177,120,.55);
-      color: var(--gold);
-      padding:8px 10px;
-      border-radius:999px;
-      font-weight:800;
-      letter-spacing:.12em;
-      font-size:11px;
-      background: rgba(0,0,0,.25);
-      white-space:nowrap;
-    }
-    .codeBox{
-      position:relative;
-      margin-top:16px;
-      padding:14px 14px;
-      border-radius:14px;
-      border:1px dashed rgba(255,255,255,.35);
-      background: rgba(0,0,0,.30);
-      text-align:center;
-    }
-    .code{
-      font-size:26px;
-      font-weight:1000;
-      letter-spacing:.16em;
-    }
-    .couponMeta{
-      position:relative;
-      margin-top:12px;
-      display:grid;
-      gap:6px;
-      color:rgba(255,255,255,.78);
+      color:#a7a7a7;
       font-size:12px;
       line-height:1.35;
     }
-    .smallLine{
-      opacity:.85;
+
+    .toast{
+      margin-top:12px;
+      border:1px solid var(--stroke);
+      border-radius:14px;
+      padding:10px 12px;
+      font-size:13px;
+      color:#eaeaea;
+      display:none;
+      background:#0d0d10;
+    }
+    .toast.ok{ display:block; }
+    .toast.bad{ display:block; border-color:#ff4d4d55; }
+
+    /* Cupón generado */
+    .couponWrap{
+      display:none;
+      margin-top:14px;
+      border:1px solid var(--stroke);
+      border-radius:16px;
+      overflow:hidden;
+      background:#0b0b0d;
+    }
+    .couponTop{
+      padding:14px 14px 12px;
+      border-bottom:1px solid var(--stroke);
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .codeBox{
+      font-weight:900;
+      letter-spacing:.22em;
+      font-size:14px;
+      background:#111;
+      border:1px solid var(--stroke);
+      padding:10px 12px;
+      border-radius:12px;
+      user-select:all;
+      white-space:nowrap;
+    }
+    .actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .miniBtn{
+      border:1px solid var(--stroke);
+      background:#101013;
+      color:#f1f1f1;
+      border-radius:12px;
+      padding:10px 10px;
+      font-size:12px;
+      cursor:pointer;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .couponBody{
+      padding:14px;
+      display:grid;
+      gap:10px;
+    }
+    .qr{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .qr img{
+      width:150px;
+      height:150px;
+      border-radius:16px;
+      border:1px solid var(--stroke);
+      background:#fff;
+    }
+    .couponText{
+      color:#cfcfcf;
+      font-size:13px;
+      line-height:1.35;
+      flex: 1;
+      min-width: 180px;
     }
   </style>
 </head>
@@ -218,254 +248,279 @@
   <div class="wrap">
     <div class="card">
       <div class="banner">
+        <!-- IMPORTANTE: el archivo debe estar en tu repo con este nombre: BANER.jpeg -->
+        <img src="BANER.jpeg" alt="CÉLINE banner" onerror="this.style.display='none'">
         <div class="brand">
-          <div class="title">CÉLINE</div>
-          <div class="sub">POP-UP CAFÉ BAR • C’est la vie</div>
+          <div class="small">CÉLINE</div>
+          <div class="line">Pop-up Café Bar · C’est la vie</div>
         </div>
       </div>
 
       <div class="content">
         <h1>Cupón de beneficio</h1>
-        <p>Completa tus datos y genera tu cupón. Presenta el cupón en caja para validación.</p>
+        <p class="sub">Completa tus datos y genera tu cupón. Preséntalo en caja para validación.</p>
 
         <form id="f">
-          <div class="grid">
+          <div>
+            <label for="nombre">Nombre y apellido</label>
+            <input id="nombre" name="nombre" placeholder="Ej. Juan Pérez" required minlength="3" />
+          </div>
+
+          <!-- WhatsApp: Código + número (en una sola línea elegante) -->
+          <div class="row2">
             <div>
-              <label for="nombre">NOMBRE Y APELLIDO</label>
-              <input id="nombre" placeholder="Ej. Juan Pérez" required />
-            </div>
-
-            <div class="row2">
-              <div>
-                <label for="pais">PAÍS (WHATSAPP)</label>
-                <select id="pais" required>
-                  <option value="">Selecciona…</option>
-                  <option value="Ecuador">Ecuador (+593)</option>
-                  <option value="Estados Unidos">Estados Unidos (+1)</option>
-                  <option value="Colombia">Colombia (+57)</option>
-                  <option value="Perú">Perú (+51)</option>
-                  <option value="España">España (+34)</option>
-                  <option value="Otro">Otro</option>
-                </select>
-              </div>
-
-              <div>
-                <label for="codigo_pais">CÓDIGO PAÍS</label>
-                <input id="codigo_pais" placeholder="+593" required />
-              </div>
-            </div>
-
-            <div>
-              <label for="celular">WHATSAPP (NÚMERO)</label>
-              <input id="celular" placeholder="Ej. 0991234567" inputmode="tel" required />
-            </div>
-
-            <div>
-              <label for="email">CORREO</label>
-              <input id="email" type="email" placeholder="Ej. nombre@gmail.com" required />
-            </div>
-
-            <div>
-              <label for="red">RED FAVORITA</label>
-              <select id="red" required>
-                <option value="">Selecciona…</option>
-                <option value="Instagram">Instagram</option>
-                <option value="TikTok">TikTok</option>
+              <label for="pais">País (WhatsApp)</label>
+              <select id="pais" name="pais" required>
+                <option value="" selected disabled>Selecciona…</option>
+                <option value="Ecuador" data-code="+593">Ecuador (+593)</option>
+                <option value="Colombia" data-code="+57">Colombia (+57)</option>
+                <option value="Perú" data-code="+51">Perú (+51)</option>
+                <option value="Chile" data-code="+56">Chile (+56)</option>
+                <option value="Argentina" data-code="+54">Argentina (+54)</option>
+                <option value="México" data-code="+52">México (+52)</option>
+                <option value="Estados Unidos" data-code="+1">Estados Unidos (+1)</option>
+                <option value="España" data-code="+34">España (+34)</option>
+                <option value="Otro" data-code="">Otro (escribe tu código)</option>
               </select>
             </div>
 
             <div>
-              <label for="usuario">USUARIO REAL / LINK</label>
-              <input id="usuario" placeholder="@tuusuario o link" required />
-              <p class="fine" style="margin:8px 0 0">Debe ser real: <b>@usuario</b> o un link válido (https://...)</p>
+              <label for="codigo_pais">Código</label>
+              <input id="codigo_pais" name="codigo_pais" placeholder="+593" required pattern="^\+\d{1,4}$" />
+            </div>
+          </div>
+
+          <div>
+            <label for="celular">WhatsApp (número)</label>
+            <input id="celular" name="celular" placeholder="Ej. 0991234567" required inputmode="numeric" pattern="^[0-9]{6,15}$" />
+            <div class="hint">Solo dígitos (sin espacios). Si tu número inicia con 0, déjalo así.</div>
+          </div>
+
+          <div>
+            <label for="email">Correo</label>
+            <input id="email" name="email" placeholder="Ej. nombre@gmail.com" required type="email" />
+          </div>
+
+          <div>
+            <label for="red">Red favorita</label>
+            <select id="red" name="red" required>
+              <option value="" selected disabled>Selecciona…</option>
+              <option value="Instagram">Instagram</option>
+              <option value="TikTok">TikTok</option>
+              <option value="Facebook">Facebook</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="usuario">Usuario real / link</label>
+            <input id="usuario" name="usuario" placeholder="@tuusuario o link https://..." required />
+            <div class="hint">Debe ser real: <b>@usuario</b> o un link válido (<b>https://...</b>).</div>
+          </div>
+
+          <button id="btn" class="btn" type="submit">Generar cupón</button>
+
+          <div class="legal">
+            Al enviar aceptas que CÉLINE use estos datos solo para esta promoción y novedades.
+          </div>
+
+          <div id="toast" class="toast"></div>
+
+          <!-- Resultado -->
+          <div id="couponWrap" class="couponWrap">
+            <div class="couponTop">
+              <div>
+                <div style="font-size:12px;color:#bdbdbd;letter-spacing:.12em;text-transform:uppercase;">Tu código</div>
+                <div id="codeBox" class="codeBox">—</div>
+              </div>
+              <div class="actions">
+                <button class="miniBtn" type="button" id="copyBtn">Copiar</button>
+                <button class="miniBtn" type="button" id="waBtn">Enviar a WhatsApp</button>
+              </div>
             </div>
 
-            <button class="btn" id="btn" type="submit">GENERAR CUPÓN</button>
-            <div class="status" id="status"></div>
-
-            <div class="fine">
-              Al enviar aceptas que <b>CÉLINE</b> use estos datos solo para esta promoción y novedades.
+            <div class="couponBody">
+              <div class="qr">
+                <img id="qrImg" alt="QR del cupón" src="" />
+                <div class="couponText" id="couponText"></div>
+              </div>
+              <div class="hint" style="margin:0;">
+                *El staff valida el código en caja. Si el código no existe en la base, no aplica.
+              </div>
             </div>
           </div>
         </form>
-      </div>
 
-      <!-- CUPÓN VISUAL -->
-      <div class="couponWrap" id="couponWrap">
-        <div class="coupon" id="couponCard">
-          <div class="couponTop">
-            <div>
-              <div class="couponBrand">CÉLINE</div>
-              <div class="couponTag">CUPÓN ESPECIAL</div>
-            </div>
-            <div class="badge">VÁLIDO</div>
-          </div>
-
-          <div class="codeBox">
-            <div class="code" id="couponCode">99A-XXXXX-01Z</div>
-          </div>
-
-          <div class="couponMeta">
-            <div class="smallLine" id="couponName">Cliente: —</div>
-            <div class="smallLine" id="couponSocial">Red: —</div>
-            <div class="smallLine">Presenta este cupón en caja para validar tu beneficio.</div>
-          </div>
-        </div>
-
-        <button class="btn ghost" id="newBtn" type="button">HACER OTRO CUPÓN</button>
-        <p class="fine" style="margin:10px 0 0">Tip: puedes hacer captura de pantalla del cupón para guardarlo.</p>
       </div>
     </div>
   </div>
 
-  <script>
-    // ✅ TU URL /exec (Google Apps Script)
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuqU7JeMiO8e1XSjNMsvqWrTEeefNWSaRNAmT4SZSVxZRyTz6gSSggypQpAILVyjGSkQ/exec";
+<script>
+  // ✅ TU URL (ya pegada)
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuqU7JeMiO8e1XSjNMsvqWrTEeefNWSaRNAmT4SZSVxZRyTz6gSSggypQpAILVyjGSkQ/exec";
 
-    // Auto código país
-    const paisSel = document.getElementById("pais");
-    const codInp  = document.getElementById("codigo_pais");
-    const codes = { "Ecuador":"+593","Estados Unidos":"+1","Colombia":"+57","Perú":"+51","España":"+34" };
-    paisSel.addEventListener("change", () => {
-      const p = paisSel.value;
-      if (codes[p]) codInp.value = codes[p];
-      if (p === "Otro") codInp.value = "";
-    });
+  const $ = (id) => document.getElementById(id);
 
-    // Validación básica de usuario/link
-    function isValidUserOrLink(v){
-      const s = (v || "").trim();
-      if (!s) return false;
-      const isHandle = /^@[a-zA-Z0-9._]{2,30}$/.test(s);
-      const isUrl = /^https?:\/\/[^\s]+$/i.test(s);
-      return isHandle || isUrl;
+  // Autocompletar código país al elegir país
+  $("pais").addEventListener("change", (e) => {
+    const opt = e.target.options[e.target.selectedIndex];
+    const code = opt.getAttribute("data-code") || "";
+    if (code) $("codigo_pais").value = code;
+    if (opt.value === "Otro") {
+      $("codigo_pais").value = "+";
+      $("codigo_pais").focus();
+    }
+  });
+
+  function showToast(msg, ok=true){
+    const t = $("toast");
+    t.className = "toast " + (ok ? "ok" : "bad");
+    t.textContent = msg;
+  }
+
+  function isValidUserOrLink(v){
+    const s = (v || "").trim();
+    if (!s) return false;
+    // @usuario
+    if (/^@[a-zA-Z0-9._]{2,30}$/.test(s)) return true;
+    // link
+    try{
+      const u = new URL(s);
+      return (u.protocol === "https:" || u.protocol === "http:");
+    }catch(_){
+      return false;
+    }
+  }
+
+  // Código “trampa” (formato staff): 99 + letra + (99..01) + letra
+  // Ej: 99A47Z (pseudo). No “garantiza” 100% único, pero es suficientemente raro.
+  function generateCouponCode(){
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const A = letters[Math.floor(Math.random()*letters.length)];
+    const Z = letters[Math.floor(Math.random()*letters.length)];
+
+    // número “al revés” (99 a 01)
+    const n = Math.floor(Math.random()*99) + 1;     // 1..99
+    const rev = (100 - n);                          // 99..1
+    const two = String(rev).padStart(2,"0");        // 99..01
+
+    return `99${A}${two}${Z}`;
+  }
+
+  function qrUrl(text){
+    // QR sin librerías (servicio público)
+    const enc = encodeURIComponent(text);
+    return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${enc}`;
+  }
+
+  function normalizeWhatsApp(code, number){
+    const c = (code || "").trim();
+    const n = (number || "").trim();
+    // wa.me necesita solo dígitos (sin +)
+    return (c.replace(/\+/g,"") + n).replace(/\D/g,"");
+  }
+
+  $("copyBtn").addEventListener("click", async () => {
+    const code = $("codeBox").textContent.trim();
+    try{
+      await navigator.clipboard.writeText(code);
+      showToast("✅ Código copiado.", true);
+    }catch{
+      showToast("Copia manual: " + code, true);
+    }
+  });
+
+  $("waBtn").addEventListener("click", () => {
+    const code = $("codeBox").textContent.trim();
+    const nombre = $("nombre").value.trim();
+    const pais = $("pais").value;
+    const wa = normalizeWhatsApp($("codigo_pais").value, $("celular").value);
+
+    const msg = `Hola CÉLINE 👋\n\nMi cupón es: ${code}\nNombre: ${nombre}\nPaís: ${pais}\n\n(Generado en la web de cupones)`;
+    const link = `https://wa.me/${wa}?text=${encodeURIComponent(msg)}`;
+    window.open(link, "_blank");
+  });
+
+  $("f").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    $("btn").disabled = true;
+
+    const nombre = $("nombre").value.trim();
+    const pais = $("pais").value;
+    const codigo_pais = $("codigo_pais").value.trim();
+    const celular = $("celular").value.trim();
+    const email = $("email").value.trim();
+    const red = $("red").value;
+    const usuario = $("usuario").value.trim();
+
+    if (!isValidUserOrLink(usuario)){
+      showToast("❌ Tu usuario/link no es válido. Usa @usuario o https://...", false);
+      $("btn").disabled = false;
+      return;
+    }
+    if (!/^\+\d{1,4}$/.test(codigo_pais)){
+      showToast("❌ El código del país debe ser como +593, +1, +34...", false);
+      $("btn").disabled = false;
+      return;
+    }
+    if (!/^[0-9]{6,15}$/.test(celular)){
+      showToast("❌ El número WhatsApp debe tener solo dígitos (6 a 15).", false);
+      $("btn").disabled = false;
+      return;
     }
 
-    // ===== TRAMPA (patrón secreto para staff) =====
-    // Código con pares complementarios:
-    //   Prefijo: NN + Letra (ej: 99A)
-    //   Sufijo:  (100-NN) + Letra espejo (A<->Z, B<->Y, etc.) (ej: 01Z)
-    // Staff valida rápido: NN + sufijo_num = 100 y letra + sufijo_letra = espejo.
-    function makeTrapCode(){
-      const n = Math.floor(Math.random() * 99) + 1;           // 1..99
-      const letterIndex = Math.floor(Math.random() * 26);      // 0..25
+    const cupon = generateCouponCode();
+    const origen = "GitHubPages";
 
-      const prefixNum = String(n).padStart(2,"0");
-      const prefixLetter = String.fromCharCode(65 + letterIndex);
+    const payload = {
+      cupon,
+      nombre,
+      pais,
+      codigo_pais,
+      celular,
+      email,
+      red,
+      usuario,
+      origen
+    };
 
-      const suffixNum = String(100 - n).padStart(2,"0");
-      const suffixLetter = String.fromCharCode(90 - letterIndex); // espejo (Z - index)
+    // Guardar en Google Sheets (Apps Script)
+    try{
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors", // ✅ evita bloqueo del navegador por CORS (igual guarda)
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
 
-      // middle: 5 chars base32 (sin 0/O/1/I)
-      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-      let mid = "";
-      for (let i=0;i<5;i++) mid += chars[Math.floor(Math.random()*chars.length)];
+      // Mostramos cupón
+      $("codeBox").textContent = cupon;
+      $("couponWrap").style.display = "block";
 
-      return `${prefixNum}${prefixLetter}-${mid}-${suffixNum}${suffixLetter}`;
+      const waFull = normalizeWhatsApp(codigo_pais, celular);
+      $("couponText").innerHTML = `
+        <div style="font-weight:800;color:#f2f2f2;margin-bottom:6px;">Cupón generado ✅</div>
+        <div>Preséntalo en caja. Tu WhatsApp: <b>+${waFull}</b></div>
+        <div style="margin-top:6px;color:#bdbdbd;">Código: <b>${cupon}</b></div>
+      `;
+
+      // QR con datos mínimos (staff puede escanear)
+      const qrData = `CELINE|${cupon}|${codigo_pais}${celular}|${red}|${usuario}`;
+      $("qrImg").src = qrUrl(qrData);
+
+      showToast("✅ Listo. Cupón generado y datos enviados.", true);
+
+      // Opcional: bajar al cupón
+      $("couponWrap").scrollIntoView({ behavior:"smooth", block:"start" });
+
+    }catch(err){
+      showToast("❌ Error de conexión. Revisa tu implementación de Apps Script (acceso: Cualquiera).", false);
+      console.error(err);
+    }finally{
+      $("btn").disabled = false;
     }
+  });
+</script>
 
-    // UI refs
-    const form = document.getElementById("f");
-    const btn = document.getElementById("btn");
-    const statusEl = document.getElementById("status");
-
-    const couponWrap = document.getElementById("couponWrap");
-    const couponCodeEl = document.getElementById("couponCode");
-    const couponNameEl = document.getElementById("couponName");
-    const couponSocialEl = document.getElementById("couponSocial");
-    const newBtn = document.getElementById("newBtn");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const nombre = document.getElementById("nombre").value.trim();
-      const pais = paisSel.value.trim();
-      const codigo_pais = codInp.value.trim();
-      const celular = document.getElementById("celular").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const red = document.getElementById("red").value.trim();
-      const usuario = document.getElementById("usuario").value.trim();
-
-      if (!nombre || !pais || !codigo_pais || !celular || !email || !red || !usuario) {
-        alert("Por favor completa todos los campos.");
-        return;
-      }
-      if (!codigo_pais.startsWith("+")) {
-        alert("El código país debe iniciar con + (ej: +593).");
-        return;
-      }
-      if (!isValidUserOrLink(usuario)) {
-        alert("El usuario debe ser real: @usuario o un link válido (https://...)");
-        return;
-      }
-
-      // Generar cupón con trampa
-      const cupon = makeTrapCode();
-
-      // Guardar en Google Sheets
-      const payload = {
-        cupon,
-        nombre,
-        pais,
-        codigo_pais,
-        celular,
-        email,
-        red,
-        usuario,
-        origen: window.location.href
-      };
-
-      btn.disabled = true;
-      statusEl.style.display = "block";
-      statusEl.textContent = "Generando…";
-
-      try{
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        });
-
-        const out = await res.json();
-
-        if (out && out.ok) {
-          statusEl.textContent = "✅ Cupón generado y guardado.";
-
-          // Mostrar cupón visual (imagen/arte)
-          couponCodeEl.textContent = cupon;
-          couponNameEl.textContent = `Cliente: ${nombre}`;
-          couponSocialEl.textContent = `Red: ${red} · ${usuario}`;
-
-          // UI toggle
-          form.style.display = "none";
-          document.querySelector(".content").style.display = "none";
-          couponWrap.style.display = "block";
-        } else {
-          statusEl.textContent = "❌ No se pudo guardar. Revisa Apps Script.";
-          console.log(out);
-          alert("No se pudo guardar. Revisa Apps Script.");
-        }
-      } catch(err){
-        console.error(err);
-        statusEl.textContent = "❌ Error de conexión. Reintenta.";
-        alert("Error de conexión. Reintenta.");
-      } finally {
-        btn.disabled = false;
-      }
-    });
-
-    newBtn.addEventListener("click", () => {
-      // volver al formulario
-      couponWrap.style.display = "none";
-      document.querySelector(".content").style.display = "block";
-      form.style.display = "block";
-      form.reset();
-      statusEl.style.display = "none";
-      statusEl.textContent = "";
-      // default
-      codInp.value = "";
-    });
-  </script>
 </body>
 </html>
-
