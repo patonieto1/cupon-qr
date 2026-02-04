@@ -1,111 +1,143 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Reclama tu cupón</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cupón especial CÉLINE</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <main class="card">
-    <h1>🎟️ Reclama tu cupón</h1>
-    <p class="sub">Ingresa tus datos (15 segundos) y recibe tu cupón.</p>
+    <!-- Banner / Marca -->
+    <header class="brand">
+      <div class="brand__logo">CÉLINE</div>
+      <div class="brand__tag">POP-UP CAFÉ BAR · C’est la vie</div>
+    </header>
 
-    <form id="f">
-      <label>Nombre y apellido</label>
-      <input name="nombre" required placeholder="Ej: Juan Pérez"/>
+    <section class="hero">
+      <h1 class="hero__title">Cupón especial</h1>
+      <p class="hero__sub">Completa tus datos (15 segundos) y recibe tu cupón al instante.</p>
+    </section>
 
-      <label>Celular</label>
-      <input name="celular" required placeholder="Ej: 0991234567" inputmode="numeric"/>
+    <form id="f" class="form">
+      <label class="label" for="nombre">Nombre y apellido</label>
+      <input id="nombre" name="nombre" class="input" placeholder="Ej. Juan Pérez" required autocomplete="name" />
 
-      <label>Red favorita</label>
-      <select name="red" required>
-        <option>Instagram</option>
-        <option>TikTok</option>
-        <option>Facebook</option>
-        <option>Otra</option>
+      <label class="label" for="celular">Celular</label>
+      <input id="celular" name="celular" class="input" placeholder="Ej. 0991234567" required inputmode="numeric" autocomplete="tel" />
+
+      <label class="label" for="red">Red favorita</label>
+      <select id="red" name="red" class="input" required>
+        <option value="Instagram" selected>Instagram</option>
+        <option value="TikTok">TikTok</option>
+        <option value="Facebook">Facebook</option>
+        <option value="WhatsApp">WhatsApp</option>
+        <option value="Otra">Otra</option>
       </select>
 
-      <label>@usuario o link (opcional)</label>
-      <input name="usuario" placeholder="@tuusuario"/>
+      <label class="label" for="usuario">@usuario o link (opcional)</label>
+      <input id="usuario" name="usuario" class="input" placeholder="@tuusuario" autocomplete="off" />
 
-      <button id="btn" type="submit">Obtener cupón</button>
-      <p id="msg" class="msg"></p>
+      <button id="btn" class="btn" type="submit">Obtener cupón</button>
+
+      <p class="fineprint">
+        Al enviar aceptas que CÉLINE use estos datos solo para esta promoción y novedades.
+      </p>
     </form>
 
-    <section id="result" class="result hidden">
-      <h2>✅ Tu cupón es:</h2>
-      <div class="coupon" id="coupon"></div>
-      <p class="fine">Muestra este código al pagar. 1 cupón por persona. Sujeto a condiciones.</p>
-      <button id="again" type="button">Registrar otro</button>
+    <!-- Cupón (oculto hasta enviar) -->
+    <section id="cup" class="coupon hidden" aria-live="polite">
+      <div class="coupon__top">
+        <div class="coupon__badge">CUPÓN</div>
+        <div class="coupon__code" id="code">CELINE-XXXX</div>
+      </div>
+
+      <div class="coupon__body">
+        <div class="coupon__title">Beneficio exclusivo</div>
+        <div class="coupon__desc" id="benefit">Beneficio exclusivo disponible en barra.</div>
+        <div class="coupon__meta">Presenta este cupón en caja</div>
+      </div>
+
+      <button class="btn btn--ghost" id="copy" type="button">Copiar código</button>
     </section>
   </main>
 
-<script>
-  // Por ahora lo dejamos así. Luego lo reemplazamos por tu URL del Apps Script /exec
-  const SCRIPT_URL = "";
+  <script>
+    // ====== CONFIG ======
+    // Pega aquí luego tu endpoint de Google Sheets / Apps Script
+    const ENDPOINT = ""; // ejemplo: "https://script.google.com/macros/s/XXXXX/exec"
 
-  const form = document.getElementById("f");
-  const btn = document.getElementById("btn");
-  const msg = document.getElementById("msg");
-  const result = document.getElementById("result");
-  const couponEl = document.getElementById("coupon");
-  const again = document.getElementById("again");
+    // Beneficio (general - Opción A)
+    const COUPON_BENEFIT = "Beneficio exclusivo disponible en barra.";
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    msg.textContent = "";
-    btn.disabled = true;
-    btn.textContent = "Guardando...";
+    // ====== LOGIC ======
+    const f = document.getElementById("f");
+    const cup = document.getElementById("cup");
+    const codeEl = document.getElementById("code");
+    const benefitEl = document.getElementById("benefit");
+    const copyBtn = document.getElementById("copy");
 
-    const data = Object.fromEntries(new FormData(form).entries());
-    data.celular = String(data.celular || "").replace(/\D/g, "");
-
-    if (data.celular.length < 8) {
-      msg.textContent = "Ingresa un celular válido.";
-      btn.disabled = false;
-      btn.textContent = "Obtener cupón";
-      return;
+    function makeCode() {
+      // Código simple, corto y fácil de leer
+      const part = Math.random().toString(36).slice(2, 6).toUpperCase();
+      return "CELINE-" + part;
     }
 
-    // Si todavía no pegaste tu SCRIPT_URL, mostramos un cupón demo para probar la web
-    if (!SCRIPT_URL) {
-      couponEl.textContent = "IBR-DEMO";
-      form.classList.add("hidden");
-      result.classList.remove("hidden");
-      btn.disabled = false;
-      btn.textContent = "Obtener cupón";
-      return;
-    }
+    async function saveToSheet(payload) {
+      // Si todavía no configuraste ENDPOINT, igual funciona y solo muestra el cupón
+      if (!ENDPOINT) return { ok: true, skipped: true };
 
-    try {
-      const res = await fetch(SCRIPT_URL, {
+      const res = await fetch(ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
-      const json = await res.json();
-      if (!json.ok) throw new Error(json.error || "Error desconocido");
-
-      couponEl.textContent = json.cupon;
-      form.classList.add("hidden");
-      result.classList.remove("hidden");
-    } catch (err) {
-      msg.textContent = "No se pudo registrar. Revisa la URL del script y vuelve a intentar.";
-      console.error(err);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Obtener cupón";
+      // Algunos Apps Script devuelven texto; intentamos JSON y si no, devolvemos ok
+      try {
+        return await res.json();
+      } catch {
+        return { ok: res.ok };
+      }
     }
-  });
 
-  again.addEventListener("click", () => {
-    form.reset();
-    result.classList.add("hidden");
-    form.classList.remove("hidden");
-    msg.textContent = "";
-  });
-</script>
+    f.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const data = {
+        nombre: f.nombre.value.trim(),
+        celular: f.celular.value.trim(),
+        red: f.red.value,
+        usuario: f.usuario.value.trim(),
+        codigo: makeCode(),
+        beneficio: COUPON_BENEFIT,
+        fecha: new Date().toISOString(),
+      };
+
+      // UI
+      benefitEl.textContent = data.beneficio;
+      codeEl.textContent = data.codigo;
+
+      // Guardar (si ya tienes endpoint)
+      try { await saveToSheet(data); } catch (err) {}
+
+      // Mostrar cupón
+      cup.classList.remove("hidden");
+      cup.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      const text = codeEl.textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = "¡Copiado!";
+        setTimeout(() => (copyBtn.textContent = "Copiar código"), 1200);
+      } catch {
+        alert("Copia este código: " + text);
+      }
+    });
+  </script>
 </body>
 </html>
+
