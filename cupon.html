@@ -73,9 +73,7 @@
   </main>
 
 <script>
-  // ✅ IMPORTANTE:
   // El QR NO abre Apps Script. Abre staff.html (tu sitio) para que iPhone no lo trate como Drive.
-
   const $ = (id) => document.getElementById(id);
 
   const params = new URLSearchParams(window.location.search);
@@ -87,10 +85,9 @@
   $("code").textContent = c || "—";
   $("meta").textContent = `${(n||"").toUpperCase()} · ${p} · WhatsApp: ${w}`;
 
-  // ✅ Staff URL EN TU SITIO
+  // Staff URL EN TU SITIO
   const staffUrl = new URL("./staff.html", window.location.href);
   staffUrl.searchParams.set("c", c);
-
   $("openStaff").href = staffUrl.toString();
 
   async function drawQR(url){
