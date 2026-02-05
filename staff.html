@@ -1,100 +1,61 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>CÉLINE — Validación Staff</title>
   <style>
-    :root{
-      --bg:#0a0b0d;--panel:rgba(17,19,23,.92);--text:#f2f4f7;--muted:#a6adb9;--line:rgba(255,255,255,.12);
-      --gold:rgba(230,214,168,.95);--ok:#a7f3d0;--bad:#ffb4b4;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);
-      display:flex;align-items:center;justify-content:center;padding:24px;}
-    .card{width:min(560px,100%);background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.55);}
-    .head{padding:16px;border-bottom:1px solid var(--line)}
-    .title{font-weight:900;letter-spacing:1px;color:var(--gold);text-transform:uppercase}
+    body{margin:0;font-family:system-ui;background:#0a0b0d;color:#f2f4f7;display:flex;min-height:100vh;align-items:center;justify-content:center;padding:18px}
+    .card{width:min(520px,100%);background:rgba(17,19,23,.92);border:1px solid rgba(255,255,255,.12);border-radius:18px;overflow:hidden}
+    .head{padding:16px;border-bottom:1px solid rgba(255,255,255,.12)}
+    .title{font-weight:900;letter-spacing:1px;color:rgba(230,214,168,.95);text-transform:uppercase}
     .content{padding:18px}
-    .code{text-align:center;font-size:30px;font-weight:1000;letter-spacing:3px;margin:12px 0 6px;}
-    .status{text-align:center;margin:10px 0;color:var(--muted)}
-    .status.ok{color:var(--ok)} .status.bad{color:var(--bad)}
-    .btnRow{display:flex;gap:10px;margin-top:12px;}
-    button{
-      flex:1;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.18);
-      background:rgba(0,0,0,.20);color:rgba(255,255,255,.88);font-weight:900;cursor:pointer;
-    }
+    .code{font-size:26px;font-weight:1000;letter-spacing:3px;text-align:center;margin:14px 0}
+    .row{display:flex;gap:10px;margin-top:12px}
+    .btn{flex:1;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.25);color:#fff;font-weight:900;cursor:pointer}
     .small{opacity:.7;margin-top:10px;font-size:12px;text-align:center}
   </style>
 </head>
 <body>
-
-  <main class="card">
+  <div class="card">
     <div class="head"><div class="title">VALIDACIÓN STAFF</div></div>
     <div class="content">
       <div class="code" id="code">—</div>
-      <div class="status" id="st">Cargando estado...</div>
 
-      <div class="btnRow">
-        <button id="btnCheck">Revisar estado</button>
-        <button id="btnRedeem">Marcar como usado</button>
+      <div class="row">
+        <button class="btn" id="btnCheck">Revisar estado</button>
+        <button class="btn" id="btnRedeem">Marcar como usado</button>
       </div>
 
-      <div class="small">Solo staff con PIN puede canjear.</div>
+      <div class="small">
+        Aquí solo el staff puede canjear con PIN.<br/>
+        Si al canjear te aparece un texto JSON, está bien (confirmación).
+      </div>
     </div>
-  </main>
+  </div>
 
 <script>
-  // ✅ TU WEB APP /exec (AQUÍ es donde va)
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPGiGLUjuT0qQUqmyejo6MJenVq1wtl79bsHmSsHD18RKWU6aTZyPPwfxn1IrkRRp0Cw/exec";
+  // 🔥 Pega aquí TU EXEC (el nuevo que te da Apps Script al publicar)
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZy5yVgdoz3RPZ6jS24sLAOpXxntM_pwxp4_wR4wtffyeBR_qToxbBMxwbdJdSzQaRhA/exec";
 
-  const $ = (id) => document.getElementById(id);
   const params = new URLSearchParams(window.location.search);
   const c = (params.get("c") || "").trim();
+  document.getElementById("code").textContent = c || "—";
 
-  $("code").textContent = c || "—";
+  // ✅ OJO: no usamos fetch (CORS). Abrimos links directos.
+  document.getElementById("btnCheck").onclick = () => {
+    if(!c) return alert("Falta código.");
+    const url = `${SCRIPT_URL}?action=check&c=${encodeURIComponent(c)}`;
+    window.open(url, "_blank");
+  };
 
-  async function check(){
-    if(!c){ $("st").textContent = "❌ Falta código."; $("st").className="status bad"; return; }
-    try{
-      const r = await fetch(`${SCRIPT_URL}?action=check&c=${encodeURIComponent(c)}`);
-      const j = await r.json();
-      if(j.ok && j.status==="VALIDO"){ $("st").textContent="✅ Cupón válido (no usado)."; $("st").className="status ok"; }
-      else if(j.ok && j.status==="USADO"){ $("st").textContent="⚠️ Cupón YA USADO."; $("st").className="status bad"; }
-      else { $("st").textContent="❌ Cupón NO EXISTE."; $("st").className="status bad"; }
-    }catch(e){
-      $("st").textContent="Sin conexión para validar.";
-      $("st").className="status bad";
-    }
-  }
-
-  async function redeem(){
-    if(!c){ alert("Falta código."); return; }
+  document.getElementById("btnRedeem").onclick = () => {
+    if(!c) return alert("Falta código.");
     const pin = prompt("PIN de caja:");
     if(!pin) return;
-
-    // ✅ Importante: canje por fetch (NO redirige) => ya no sale Drive en iPhone/PC
-    try{
-      const r = await fetch(`${SCRIPT_URL}?action=redeem&c=${encodeURIComponent(c)}&pin=${encodeURIComponent(pin)}`);
-      const j = await r.json();
-
-      if(j.ok && (j.status==="CANJEADO" || j.status==="USADO")){
-        alert("✅ Canje registrado.");
-        await check();
-      } else {
-        alert("❌ " + (j.error || "No autorizado / error"));
-      }
-    }catch(e){
-      alert("Sin conexión para canjear.");
-    }
-  }
-
-  $("btnCheck").addEventListener("click", check);
-  $("btnRedeem").addEventListener("click", redeem);
-
-  // auto
-  check();
+    const url = `${SCRIPT_URL}?action=redeem&c=${encodeURIComponent(c)}&pin=${encodeURIComponent(pin)}`;
+    window.open(url, "_blank");
+  };
 </script>
 </body>
 </html>
