@@ -132,8 +132,8 @@
   </main>
 
 <script>
-  // ✅ LINK NUEVO /exec (este es el que debe estar en index)
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuqU7JeMiO8e1XSjNMsvqWrTEeefNWSaRNAmT4SZSVxZRyTz6gSSggypQpAILVyjGSkQ/exec";
+  // ✅ NUEVO WEB APP /exec
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziPg0B1t-E3IMS2VUXd3iR1Eq9xPA9yM_XMbSB9CfcZljez-rdEibyNPTg3j27ih4x/exec";
 
   const $ = (id) => document.getElementById(id);
   const msgEl = $("msg");
@@ -203,11 +203,10 @@
         return setMsg("Error: " + (out.error || "No se pudo generar el cupón"), "bad");
       }
 
-      // Apps Script devuelve { ok:true, cupon:"..." }
       const codigo = out.cupon || out.coupon || out.codigo;
       if (!codigo) return setMsg("No llegó el código. Revisa Apps Script.", "bad");
 
-      // ✅ envía a cupon.html
+      // ✅ Enviar a cupon.html con parámetros
       const url = new URL("./cupon.html", window.location.href);
       url.searchParams.set("c", codigo);
       url.searchParams.set("n", nombre);
@@ -217,7 +216,7 @@
       window.location.href = url.toString();
 
     }catch(err){
-      setMsg("Error de conexión. Revisa Apps Script (acceso: Cualquiera) y URL /exec.", "bad");
+      setMsg("Error de conexión. Revisa que tu Web App sea 'Cualquiera' y que el link sea /exec.", "bad");
     }finally{
       btn.disabled = false;
       btn.textContent = "Generar cupón";
