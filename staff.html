@@ -1,109 +1,61 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>CÉLINE — Validación Staff</title>
   <style>
-    body{margin:0;font-family:system-ui;background:#0a0b0d;color:#f2f4f7;display:flex;min-height:100vh;align-items:center;justify-content:center;padding:18px}
-    .card{width:min(560px,100%);background:rgba(17,19,23,.92);border:1px solid rgba(255,255,255,.12);border-radius:18px;overflow:hidden}
-    .head{padding:16px;border-bottom:1px solid rgba(255,255,255,.12)}
-    .title{font-weight:900;letter-spacing:1px;color:rgba(230,214,168,.95);text-transform:uppercase}
-    .content{padding:18px}
-    .code{font-size:28px;font-weight:1000;letter-spacing:3px;text-align:center;margin:14px 0}
-    .status{margin:10px 0;text-align:center;color:rgba(255,255,255,.8)}
+    :root{--bg:#0a0b0d;--panel:rgba(17,19,23,.92);--text:#f2f4f7;--muted:#a6adb9;--line:rgba(255,255,255,.12);--gold:rgba(230,214,168,.95);}
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);
+      display:flex;align-items:center;justify-content:center;padding:24px;}
+    .card{width:min(560px,100%);background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden;padding:18px;}
+    .title{font-weight:900;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:10px}
+    .code{font-size:32px;font-weight:1000;letter-spacing:3px;text-align:center;margin:10px 0 14px}
     .row{display:flex;gap:10px;margin-top:12px}
-    .btn{flex:1;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.25);color:#fff;font-weight:900;cursor:pointer}
-    .btn:disabled{opacity:.6;cursor:not-allowed}
-    .small{opacity:.65;margin-top:12px;font-size:12px;text-align:center;line-height:1.35}
-    iframe{width:0;height:0;border:0;position:absolute;left:-9999px;top:-9999px}
+    button{flex:1;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.20);color:#fff;font-weight:900;cursor:pointer}
+    .msg{margin-top:12px;color:var(--muted);text-align:center}
+    .small{margin-top:10px;font-size:12px;opacity:.75;text-align:center}
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="head"><div class="title">VALIDACIÓN STAFF</div></div>
-    <div class="content">
-      <div class="code" id="code">—</div>
+    <div class="title">Validación Staff</div>
+    <div class="code" id="code">—</div>
+    <div class="msg" id="msg">Listo para revisar/canjear.</div>
 
-      <div class="status" id="st">Listo para validar.</div>
-
-      <div class="row">
-        <button class="btn" id="btnCheck">Revisar estado</button>
-        <button class="btn" id="btnRedeem">Marcar como usado</button>
-      </div>
-
-      <div class="small">
-        ✅ Esto REGISTRA en Google Sheet.<br/>
-        Solo el staff con PIN puede canjear.
-      </div>
+    <div class="row">
+      <button onclick="openCheck()">Revisar estado</button>
+      <button onclick="openRedeem()">Marcar como usado</button>
     </div>
+
+    <div class="small">✅ Esto registra en Google Sheet. Solo staff con PIN puede canjear.</div>
   </div>
 
-  <!-- iframe invisible para llamar a Apps Script sin abrir Drive -->
-  <iframe id="call"></iframe>
-
 <script>
-  // ✅ PEGA TU WEB APP /exec AQUÍ:
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZy5yVgdoz3RPZ6jS24sLAOpXxntM_pwxp4_wR4wtffyeBR_qToxbBMxwbdJdSzQaRhA/exec";
+  // 🔥 Pega aquí TU WEB APP /exec FINAL (el nuevo que funciona)
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxB99bH4wyu8phnABAiT9Uapg9Nkh6NwlHIfPOltMg2hqDkvVN-CwYSzfzYvffXVfY2hA/exec";
 
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(location.search);
   const c = (params.get("c") || "").trim();
+  document.getElementById("code").textContent = c || "—";
 
-  const $ = (id) => document.getElementById(id);
-  $("code").textContent = c || "—";
-
-  function setStatus(t){ $("st").textContent = t; }
-
-  function callUrl(url){
-    // dispara el request sin abrir pestañas
-    $("call").src = url;
-  }
-
-  function openJson(url){
-    // opción extra: abre en nueva pestaña si quieres ver el JSON
-    window.open(url, "_blank", "noopener");
-  }
-
-  $("btnCheck").onclick = () => {
+  function openCheck(){
     if(!c) return alert("Falta código.");
-    setStatus("Revisando estado...");
     const url = `${SCRIPT_URL}?action=check&c=${encodeURIComponent(c)}`;
+    window.open(url, "_blank");
+    document.getElementById("msg").textContent = "✅ Estado solicitado. (Si quieres ver el resultado exacto, abre el JSON en una pestaña)";
+  }
 
-    // si quieres ver el JSON, descomenta:
-    // openJson(url);
-
-    // Llamada silenciosa (igual funciona aunque no podamos leer la respuesta)
-    callUrl(url);
-    setTimeout(() => setStatus("✅ Estado solicitado. (Si quieres ver el resultado exacto, abre el JSON en una pestaña)"), 600);
-  };
-
-  $("btnRedeem").onclick = () => {
+  function openRedeem(){
     if(!c) return alert("Falta código.");
     const pin = prompt("PIN de caja:");
     if(!pin) return;
 
-    $("btnRedeem").disabled = true;
-    setStatus("Canjeando...");
-
     const url = `${SCRIPT_URL}?action=redeem&c=${encodeURIComponent(c)}&pin=${encodeURIComponent(pin)}`;
-
-    // 🔥 CANJE REAL (esto escribe en Google Sheet)
-    callUrl(url);
-
-    // Para que el staff vea confirmación clara:
-    setTimeout(() => {
-      setStatus("✅ Canje enviado. Ahora revisa en el Sheet (USADO/FECHA_USO).");
-      $("btnRedeem").disabled = false;
-    }, 900);
-
-    // Si quieres que siempre se vea el JSON de confirmación:
-    // openJson(url);
-  };
-
-  // auto-check al abrir
-  if(c){
-    const url = `${SCRIPT_URL}?action=check&c=${encodeURIComponent(c)}`;
-    callUrl(url);
+    // ABRIMOS DIRECTO (sin fetch) para evitar CORS y bloqueos
+    window.open(url, "_blank");
+    document.getElementById("msg").textContent = "✅ Canje solicitado. Revisa el JSON en la pestaña abierta y luego mira el Sheet.";
   }
 </script>
 </body>
