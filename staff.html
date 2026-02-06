@@ -35,7 +35,7 @@
         </div>
 
         <div class="row">
-          <a class="btn" id="btnOpenJson" href="#" target="_blank" rel="noopener">Abrir JSON</a>
+          <a class="btn" id="btnOpenJson" href="#" target="_blank" rel="noopener">Abrir JSON (debug)</a>
         </div>
 
         <div class="small">✅ Esto registra en Google Sheet. Solo staff con PIN puede canjear.</div>
@@ -44,7 +44,9 @@
   </main>
 
 <script>
+  // ✅ TU WEB APP (Apps Script /exec)
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxEyQ4AdE10n3JFTtgH6DKjU38MvplEpdltVCwwe0OLFtgi4hgy7BhkDhu0e-9MQKLsuQ/exec";
+
   const $ = (id)=>document.getElementById(id);
   const params = new URLSearchParams(location.search);
   const c = (params.get("c") || "").trim();
@@ -56,10 +58,10 @@
     $("st").className = "status" + (type ? (" " + type) : "");
   }
 
-  // JSONP con timeout
-  function jsonp(url, timeoutMs=9000){
+  // ✅ JSONP (Apps Script debe responder cb_xxx({...});)
+  function jsonp(baseUrl, timeoutMs=9000){
     return new Promise((resolve, reject)=>{
-      const cb = "cb_" + Math.random().toString(36).slice(2);
+      const cbName = "cb_" + Math.random().toString(36).slice(2);
       let done = false;
 
       const timer = setTimeout(()=>{
@@ -69,7 +71,7 @@
         reject(new Error("TIMEOUT"));
       }, timeoutMs);
 
-      window[cb] = (data)=>{
+      window[cbName] = (data)=>{
         if(done) return;
         done = true;
         clearTimeout(timer);
@@ -78,12 +80,15 @@
       };
 
       function cleanup(){
-        try{ delete window[cb]; }catch(e){ window[cb]=undefined; }
+        try{ delete window[cbName]; }catch(e){ window[cbName]=undefined; }
         if(script && script.parentNode) script.parentNode.removeChild(script);
       }
 
       const script = document.createElement("script");
-      script.src = url + (url.includes("?") ? "&" : "?") + "cb=" + cb;
+      // 👇 IMPORTANTE: forzamos callback= para Apps Script (y también acepta cb)
+      const url = baseUrl + (baseUrl.includes("?") ? "&" : "?") + "callback=" + encodeURIComponent(cbName);
+      script.src = url;
+
       script.onerror = ()=>{
         if(done) return;
         done = true;
@@ -91,28 +96,27 @@
         cleanup();
         reject(new Error("SCRIPT_ERROR"));
       };
+
       document.body.appendChild(script);
     });
   }
 
-  function setOpenJsonLink(){
-    if(!c) return;
-    const raw = `${SCRIPT_URL}?action=check&c=${encodeURIComponent(c)}`;
-    $("btnOpenJson").href = raw; // abre el JSON normal en otra pestaña
+  // Link debug: abre el JSON normal en pestaña
+  if(c){
+    $("btnOpenJson").href = `${SCRIPT_URL}?action=check&c=${encodeURIComponent(c)}`;
   }
-  setOpenJsonLink();
 
   async function check(){
     if(!c) return setStatus("❌ Falta el código (c=...)", "bad");
     setStatus("Cargando estado...", "");
     try{
-      const url = `${SCRIPT_URL}?action=check&c=${encodeURIComponent(c)}`;
-      const out = await jsonp(url);
+      const base = `${SCRIPT_URL}?action=check&c=${encodeURIComponent(c)}`;
+      const out = await jsonp(base);
       if(out.ok && out.status==="VALIDO") return setStatus("✅ Cupón válido (no usado).", "ok");
       if(out.ok && out.status==="USADO")  return setStatus("⚠️ Cupón YA USADO.", "bad");
       return setStatus("❌ Cupón NO EXISTE.", "bad");
-    }catch(err){
-      setStatus("❌ No se pudo validar. Abre 'Abrir JSON' y dime qué te sale (login/HTML/error).", "bad");
+    }catch{
+      setStatus("❌ No se pudo validar. Abre 'Abrir JSON (debug)' y si te manda a Drive/login, es DEPLOYMENT.", "bad");
     }
   }
 
@@ -123,16 +127,16 @@
 
     setStatus("Canjeando...", "");
     try{
-      const url = `${SCRIPT_URL}?action=redeem&c=${encodeURIComponent(c)}&pin=${encodeURIComponent(pin)}`;
-      const out = await jsonp(url);
+      const base = `${SCRIPT_URL}?action=redeem&c=${encodeURIComponent(c)}&pin=${encodeURIComponent(pin)}`;
+      const out = await jsonp(base);
 
       if(!out.ok && out.error==="NO_AUTORIZADO") return setStatus("❌ PIN incorrecto.", "bad");
       if(out.ok && out.status==="CANJEADO")      return setStatus("✅ CANJEADO y registrado en Sheet.", "ok");
       if(out.ok && out.status==="USADO")         return setStatus("⚠️ Ya estaba usado.", "bad");
 
       setStatus("❌ Error al canjear: " + (out.error || "desconocido"), "bad");
-    }catch(err){
-      setStatus("❌ No se pudo canjear. Abre 'Abrir JSON' y revisa deployment.", "bad");
+    }catch{
+      setStatus("❌ No se pudo canjear. Si el /exec NO responde callback(...), es DEPLOYMENT.", "bad");
     }
   }
 
