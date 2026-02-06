@@ -74,7 +74,9 @@
 
   // ✅ QR apunta a staff.html (GitHub), NO a Apps Script
   const staffUrl = new URL("./staff.html", window.location.href);
-  staffUrl.searchParams.set("c", c);
+staffUrl.searchParams.set("c", c);
+staffUrl.searchParams.set("v", "20260206"); // 👈 cambia el número cuando actualices
+;
   $("openStaff").href = staffUrl.toString();
 
   async function drawQR(url){
